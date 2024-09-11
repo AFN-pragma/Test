@@ -1,0 +1,107 @@
+CREATE TABLE WINE (
+NumberW INT PRIMARY KEY,
+Categorie varchar(20),
+Year INT,
+Degree DECIMAL(4, 2)
+);
+
+CREATE TABLE PRODUCER (
+NumberP INT PRIMARY KEY,
+First_name varchar(20) NOT NULL,
+Last_name varchar(20) NOT NULL,
+Region varchar(20) NOT NULL
+);
+
+INSERT INTO WINE VALUES (1, 'Red', 2019, 13.5)
+INSERT INTO WINE VALUES (2, 'White', 2020, 12.0)
+INSERT INTO WINE VALUES (3, 'Rose', 2018, 11.5)
+INSERT INTO WINE VALUES (4, 'Red', 2021, 14.0)
+INSERT INTO WINE VALUES (5, 'Sparkling', 2017, 10.5)
+INSERT INTO WINE VALUES (6, 'White', 2019, 12.5)
+INSERT INTO WINE VALUES (7, 'Red', 2022, 13.0)
+INSERT INTO WINE VALUES (8, 'Rose', 2020, 11.0)
+INSERT INTO WINE VALUES (9, 'Red', 2018, 12.0)
+INSERT INTO WINE VALUES (10, 'Sparkling', 2019, 10.0)
+INSERT INTO WINE VALUES (11, 'White', 2021, 11.5)
+INSERT INTO WINE VALUES (12, 'Red', 2022, 15.0)
+
+INSERT INTO PRODUCER VALUES (1, 'John', 'Smith', 'Sousse')
+INSERT INTO PRODUCER VALUES (2, 'Emma', 'Johnson', 'Tunis')
+INSERT INTO PRODUCER VALUES (3, 'Michael', 'Williams', 'Sfax')
+INSERT INTO PRODUCER VALUES (4, 'Emily', 'Brown', 'Sousse')
+INSERT INTO PRODUCER VALUES (5, 'James', 'Jones', 'Sousse')
+INSERT INTO PRODUCER VALUES (6, 'Sarah', 'Davis', 'Tunis')
+INSERT INTO PRODUCER VALUES (7, 'David', 'Miller', 'Sfax')
+INSERT INTO PRODUCER VALUES (8, 'Olivia', 'Wilson', 'Monastir')
+INSERT INTO PRODUCER VALUES (9, 'Daniel', 'Moore', 'Sousse')
+INSERT INTO PRODUCER VALUES (10, 'Sophia', 'Taylor', 'Tunis')
+INSERT INTO PRODUCER VALUES (11, 'Matthew', 'Anderson', 'Sfax')
+INSERT INTO PRODUCER VALUES (12, 'Amelia', 'Thomas', 'Sousse')
+
+SELECT * FROM PRODUCER
+
+SELECT First_name, Last_name FROM PRODUCER
+
+SELECT First_name, Last_name
+FROM PRODUCER 
+WHERE Region = 'Sousse'
+
+create table harvest (
+Quantity INT,
+NumberW INT,
+NumberP INT,
+constraint NumberW_fk foreign key (NumberW) references WINE(NumberW),
+constraint NumberP_fk foreign key (NumberP) references PRODUCER(NumberP)
+);
+
+SELECT SUM(Quantity) as total_quantity
+FROM harvest 
+WHERE NumberW = 12
+
+select Quantity, Categorie
+from WINE 
+INNER JOIN harvest 
+ON harvest.NumberW = WINE.NumberW
+
+SELECT DISTINCT First_name, Last_name
+FROM PRODUCER 
+INNER JOIN harvest  
+ON PRODUCER.NumberP = harvest.NumberP
+WHERE Region = 'Sousse' AND harvest.Quantity > 30
+ORDER BY PRODUCER.Last_name, PRODUCER.First_name;
+
+SELECT Degree, harvest.NumberW
+FROM harvest  
+INNER JOIN WINE 
+ON harvest.NumberW = WINE.NumberW
+INNER JOIN PRODUCER
+ON harvest.NumberP = PRODUCER.NumberP
+WHERE Degree > 12 AND PRODUCER. NumberP = 24
+
+SELECT 
+    CONCAT(PRODUCER.First_name, PRODUCER.Last_name) AS Producer,
+    SUM(harvest.Quantity) AS Total_Quantity
+FROM PRODUCER
+INNER JOIN harvest ON harvest.NumberP = PRODUCER.NumberP
+GROUP BY PRODUCER.First_name, PRODUCER.Last_name
+ORDER BY Total_Quantity DESC
+
+select AVG(Degree) 
+	from WINE
+	
+	select Year, (Categorie) as oldest_wine
+	from WINE 
+	order by year ASC;
+
+SELECT (Last_name) as PRODUCER, (Quantity) as total_quantity
+FROM  PRODUCER
+INNER JOIN harvest 
+ON harvest.NumberP = PRODUCER.NumberP
+
+select (Categorie) as WINE, PRODUCER.NumberP , First_name, Last_name, Region, Quantity
+	from WINE 
+	INNER JOIN harvest 
+	on harvest.NumberW = WINE.NumberW
+	INNER JOIN PRODUCER 
+	ON harvest.NumberP = PRODUCER.NumberP
+
